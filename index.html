@@ -12,7 +12,6 @@
         .font-cinzel { font-family: 'Cinzel', serif; }
         html { scroll-behavior: smooth; }
         ::selection { background-color: #d97706; color: white; }
-        /* Custom scrollbar untuk filter genre horizontal */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -65,47 +64,15 @@
             </div>
         </section>
 
-        <!-- PILIHAN GENRE (FILTER INTERAKTIF) -->
+        <!-- PILIHAN GENRE (DIBUAT OTOMATIS VIA JS) -->
         <section id="genre" class="space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-bold font-cinzel text-slate-100">Pilih Berdasarkan Genre</h2>
                 <span class="text-xs text-slate-400">Klik untuk menyaring kategori</span>
             </div>
-            <!-- Daftar Tombol Genre -->
+            <!-- Tombol genre akan digenerate otomatis di sini -->
             <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2" id="genre-filter-container">
-                <button onclick="filterGenre('Semua', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition shrink-0 cursor-pointer shadow-lg shadow-amber-500/10">
-                    Semua Genre
-                </button>
-                <button onclick="filterGenre('Fantasy', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Fantasy / Fantasi
-                </button>
-                <button onclick="filterGenre('Romance', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Romance / Romantis
-                </button>
-                <button onclick="filterGenre('Action', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Action / Aksi
-                </button>
-                <button onclick="filterGenre('Isekai', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Isekai / Reinkarnasi
-                </button>
-                <button onclick="filterGenre('Sci-Fi', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Sci-Fi / Fiksi Ilmiah
-                </button>
-                <button onclick="filterGenre('Mystery', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Mystery / Thriller
-                </button>
-                <button onclick="filterGenre('Slice of Life', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Slice of Life
-                </button>
-                <button onclick="filterGenre('Historical', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Historical / Sejarah
-                </button>
-                <button onclick="filterGenre('Horror', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Horror / Horor
-                </button>
-                <button onclick="filterGenre('Comedy', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
-                    Comedy / Komedi
-                </button>
+                <!-- Javascript yang akan mengisi tombol-tombol di sini -->
             </div>
         </section>
 
@@ -118,7 +85,7 @@
 
             <!-- Grid Daftar Novel Dinamis -->
             <div id="dynamic-novel-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Data akan dimuat otomatis dari localStorage -->
+                <!-- Novel dimuat otomatis -->
             </div>
         </section>
 
@@ -135,52 +102,87 @@
         </div>
     </footer>
 
-    <!-- SCRIPT RENDER & FILTER OTOMATIS -->
+    <!-- SCRIPT DATA & GENERATE GENRE OTOMATIS -->
     <script>
-        let allNovelsData = [];
+        // DAFTAR NOVEL ANDA (Bebas tambah genre apa saja di sini!)
+        const allNovelsData = [
+            {
+                title: "Diantara Kampus dan Sepertiga Malam",
+                author: "Rangga",
+                genre: "Fantasy",
+                status: "Ongoing",
+                synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
+                cover: "",
+                chapters: [
+                    {
+                        title: "Bab 1: Gerbang Awal",
+                        content: "Malam itu angin berhembus kencang di sekitar kampus. \"Apakah kamu yakin kita harus melanjutkan perjalanan ini?\" tanya seseorang dari kegelapan. Aku terdiam sejenak, menatap ke arah cahaya misterius di ujung koridor."
+                    }
+                ]
+            },
+            {
+                title: "Detektif Malam Kota Bogor",
+                author: "Rangga",
+                genre: "Mystery",
+                status: "Ongoing",
+                synopsis: "Penyelidikan kasus misterius di tengah kota hujan yang menyimpan rahasia kelam.",
+                cover: "",
+                chapters: [
+                    {
+                        title: "Bab 1: Hujan Deras",
+                        content: "\"Kopi ini sudah dingin, tapi petunjuknya belum juga terang,\" keluhku sambil menatap berkas di atas meja."
+                    }
+                ]
+            }
+        ];
+
+        localStorage.setItem("karantau_novels", JSON.stringify(allNovelsData));
+
         let activeSelectedGenre = 'Semua';
 
         document.addEventListener("DOMContentLoaded", () => {
-            const novels = JSON.parse(localStorage.getItem("karantau_novels")) || [];
-
-            // Jika LocalStorage kosong, masukkan data default awal
-            if (novels.length === 0) {
-                allNovelsData = [
-                    {
-                        title: "Diantara Kampus dan Sepertiga Malam",
-                        author: "Rangga Ash Raffy",
-                        genre: "Fantasy",
-                        status: "Ongoing",
-                        synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
-                        cover: ""
-                    }
-                ];
-                localStorage.setItem("karantau_novels", JSON.stringify(allNovelsData));
-            } else {
-                allNovelsData = novels;
-            }
-
+            generateGenreButtons();
             renderNovelCards(allNovelsData);
         });
 
+        // Fungsi untuk membuat tombol genre secara otomatis dari data novel
+        function generateGenreButtons() {
+            const container = document.getElementById('genre-filter-container');
+            container.innerHTML = '';
+
+            // Ambil semua genre unik dari array novel
+            const genres = ['Semua', ...new Set(allNovelsData.map(novel => novel.genre || 'Fantasy'))];
+
+            genres.forEach(genre => {
+                const btn = document.createElement('button');
+                btn.innerText = genre === 'Semua' ? 'Semua Genre' : genre;
+                btn.className = `genre-btn px-4 py-2 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer ${
+                    genre === activeSelectedGenre 
+                    ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/10' 
+                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500'
+                }`;
+                btn.onclick = () => filterGenre(genre, btn);
+                container.appendChild(btn);
+            });
+        }
+
         function filterGenre(genre, element) {
             activeSelectedGenre = genre;
-
-            // Perbarui gaya aktif pada tombol-tombol genre
+            
+            // Perbarui warna aktif tombol
             const buttons = document.querySelectorAll('.genre-btn');
             buttons.forEach(btn => {
                 btn.className = "genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer";
             });
             element.className = "genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition shrink-0 cursor-pointer shadow-lg shadow-amber-500/10";
 
-            // Ubah judul katalog sesuai genre yang dipilih
             const titleElem = document.getElementById('katalog-title');
             if (genre === 'Semua') {
                 titleElem.innerText = "Katalog Novel Terbaru";
                 renderNovelCards(allNovelsData);
             } else {
                 titleElem.innerText = `Katalog Genre: ${genre}`;
-                const filtered = allNovelsData.filter(novel => novel.genre === genre);
+                const filtered = allNovelsData.filter(novel => (novel.genre || 'Fantasy') === genre);
                 renderNovelCards(filtered);
             }
         }
@@ -205,7 +207,6 @@
             }
 
             novelsToRender.forEach((novel) => {
-                // Cari index asli novel di dalam array utama (agar link detail.html tetap akurat)
                 const originalIndex = allNovelsData.findIndex(n => n.title === novel.title);
 
                 let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
@@ -226,7 +227,7 @@
                             <span class="absolute top-3 right-3 text-[10px] px-2.5 py-1 bg-slate-950/80 backdrop-blur-md ${badgeClass} rounded-full font-semibold border">${novel.status}</span>
                         </div>
                         <div class="space-y-1.5">
-                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${novel.genre || 'Fantasi'}</span>
+                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${novel.genre || 'Fantasy'}</span>
                             <h3 class="text-base font-bold font-cinzel text-slate-100 group-hover:text-amber-300 transition">${novel.title}</h3>
                             <p class="text-xs text-slate-400 line-clamp-2">${novel.synopsis || 'Tidak ada sinopsis.'}</p>
                         </div>
