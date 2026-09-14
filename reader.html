@@ -13,6 +13,12 @@
         .font-serif-reading { font-family: 'Lora', serif; }
         html { scroll-behavior: smooth; }
         ::selection { background-color: #d97706; color: white; }
+        
+        /* Styling khusus untuk teks percakapan/dialog agar lebih hidup */
+        .novel-dialogue {
+            color: #fbbf24; /* Warna amber/keemasan lembut agar mudah dibaca */
+            font-style: italic;
+        }
     </style>
 </head>
 <body class="bg-[#05070b] text-slate-200 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
@@ -73,7 +79,7 @@
         <p class="mt-1">&copy; 2026 Seluruh Hak Cipta Dilindungi.</p>
     </footer>
 
-    <!-- SCRIPT OTOMATIS & TOLERAN BERBAGAI FORMAT ADMIN PANEL -->
+    <!-- SCRIPT OTOMATIS & FORMATTER DIALOG PERCAKAPAN -->
     <script>
         let chapterPages = [];
         let currentPage = 0;
@@ -100,26 +106,21 @@
                     document.getElementById('headerChapterTitle').innerText = chapterTitle;
                     document.getElementById('pageTitle').innerText = chapterTitle;
                     
-                    // CEK BERBAGAI KEMUNGKINAN FORMAT PENYIMPANAN DARI ADMIN PANEL:
                     let rawContent = currentChapter.pages || currentChapter.content || currentChapter.text || currentChapter.body;
 
                     if (Array.isArray(rawContent) && rawContent.length > 0) {
-                        // Jika disimpan sebagai Array
-                        chapterPages = rawContent.map(p => [typeof p === 'string' ? `<p>${p}</p>` : p]);
+                        chapterPages = rawContent.map(p => [typeof p === 'string' ? formatDialogue(p) : p]);
                     } else if (typeof rawContent === 'string' && rawContent.trim() !== '') {
-                        // Jika disimpan sebagai String teks biasa / paragraf panjang
-                        // Otomatis ubah baris baru (\n) atau teks panjang menjadi elemen paragraf HTML
                         const paragraphs = rawContent.split(/\r?\n/).filter(p => p.trim() !== '');
                         if (paragraphs.length > 0) {
-                            chapterPages = paragraphs.map(p => [`<p class="mb-4">${p}</p>`]);
+                            chapterPages = paragraphs.map(p => [`<p class="mb-4">${formatDialogue(p)}</p>`]);
                         } else {
-                            chapterPages = [[`<p>${rawContent}</p>`]];
+                            chapterPages = [[`<p>${formatDialogue(rawContent)}</p>`]];
                         }
                     }
                 }
             }
 
-            // Jika data masih kosong atau belum diisi di Admin Panel
             if (chapterPages.length === 0) {
                 document.getElementById('headerChapterTitle').innerText = "Bab Belum Tersedia";
                 document.getElementById('pageTitle').innerText = "Konten Belum Diunggah";
@@ -131,6 +132,12 @@
             document.getElementById('totalPageIndicator').innerText = chapterPages.length;
             renderPage();
         });
+
+        // Fungsi pintar untuk mendeteksi teks di dalam tanda kutip ganda ("...") lalu merubahnya menjadi gaya dialog
+        function formatDialogue(text) {
+            // Mengganti teks di dalam tanda kutip ganda agar memiliki kelas .novel-dialogue
+            return text.replace(/"([^"]+)"/g, '<span class="novel-dialogue">"$1"</span>');
+        }
 
         function renderPage() {
             const contentContainer = document.getElementById('storyContent');
