@@ -118,13 +118,16 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Genre Utama</label>
                         <select id="input-novel-genre" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
-                            <option>Fantasi Epik</option>
-                            <option>Isekai / Reinkarnasi</option>
-                            <option>Sci-Fi / Cyberpunk</option>
-                            <option>Romance / Percintaan</option>
-                            <option>Action / Bela Diri</option>
-                            <option>Misteri / Thriller</option>
-                            <option>Slice of Life / Santai</option>
+                            <option value="Fantasy">Fantasy / Fantasi</option>
+                            <option value="Romance">Romance / Romantis</option>
+                            <option value="Action">Action / Aksi & Petualangan</option>
+                            <option value="Isekai">Isekai / Reinkarnasi</option>
+                            <option value="Sci-Fi">Sci-Fi / Fiksi Ilmiah</option>
+                            <option value="Mystery">Mystery / Thriller / Misteri</option>
+                            <option value="Slice of Life">Slice of Life / Kehidupan Sehari-hari</option>
+                            <option value="Historical">Historical / Sejarah</option>
+                            <option value="Horror">Horror / Horor</option>
+                            <option value="Comedy">Comedy / Komedi</option>
                         </select>
                     </div>
                     <div class="space-y-1.5">
@@ -231,7 +234,7 @@
             document.getElementById('modal-novel-title-text').innerText = 'Edit Novel';
             document.getElementById('input-novel-title').value = novel.title || '';
             document.getElementById('input-novel-author').value = novel.author || '';
-            document.getElementById('input-novel-genre').value = novel.genre || 'Fantasi Epik';
+            document.getElementById('input-novel-genre').value = novel.genre || 'Fantasy';
             document.getElementById('input-novel-status').value = novel.status || 'Ongoing';
             document.getElementById('input-novel-synopsis').value = novel.synopsis || '';
             
@@ -281,7 +284,6 @@
                     document.getElementById('chapter-number-input').value = chap.number || '';
                     document.getElementById('chapter-title-input').value = chap.title || '';
                     
-                    // Gabungkan kembali halaman array ke dalam teks textarea agar mudah diedit
                     let fullText = '';
                     if (chap.pages && Array.isArray(chap.pages)) {
                         fullText = chap.pages.map(pageArr => pageArr.join('\n')).join('\n\n');
@@ -342,7 +344,7 @@
                     {
                         title: "Diantara Kampus dan Sepertiga Malam",
                         author: "Rangga Ash Raffy",
-                        genre: "Fantasi Epik",
+                        genre: "Fantasy",
                         status: "Ongoing",
                         synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
                         cover: "",
@@ -546,11 +548,9 @@
                 }
 
                 if (editChapIndex !== "") {
-                    // Mode Update / Edit Bab yang sudah ada
                     novels[novelIndex].chapters[editChapIndex] = chapterData;
                     alert(`Berhasil! Perubahan pada bab "${chapterTitle}" berhasil disimpan.`);
                 } else {
-                    // Mode Tambah Bab Baru
                     novels[novelIndex].chapters.push(chapterData);
                     alert(`Berhasil! Bab "${chapterTitle}" berhasil ditambahkan.`);
                 }
