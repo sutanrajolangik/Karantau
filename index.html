@@ -12,6 +12,9 @@
         .font-cinzel { font-family: 'Cinzel', serif; }
         html { scroll-behavior: smooth; }
         ::selection { background-color: #d97706; color: white; }
+        /* Custom scrollbar untuk filter genre horizontal */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-[#07090e] text-slate-100 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
@@ -62,11 +65,55 @@
             </div>
         </section>
 
+        <!-- PILIHAN GENRE (FILTER INTERAKTIF) -->
+        <section id="genre" class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold font-cinzel text-slate-100">Pilih Berdasarkan Genre</h2>
+                <span class="text-xs text-slate-400">Klik untuk menyaring kategori</span>
+            </div>
+            <!-- Daftar Tombol Genre -->
+            <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2" id="genre-filter-container">
+                <button onclick="filterGenre('Semua', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition shrink-0 cursor-pointer shadow-lg shadow-amber-500/10">
+                    Semua Genre
+                </button>
+                <button onclick="filterGenre('Fantasy', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Fantasy / Fantasi
+                </button>
+                <button onclick="filterGenre('Romance', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Romance / Romantis
+                </button>
+                <button onclick="filterGenre('Action', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Action / Aksi
+                </button>
+                <button onclick="filterGenre('Isekai', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Isekai / Reinkarnasi
+                </button>
+                <button onclick="filterGenre('Sci-Fi', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Sci-Fi / Fiksi Ilmiah
+                </button>
+                <button onclick="filterGenre('Mystery', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Mystery / Thriller
+                </button>
+                <button onclick="filterGenre('Slice of Life', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Slice of Life
+                </button>
+                <button onclick="filterGenre('Historical', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Historical / Sejarah
+                </button>
+                <button onclick="filterGenre('Horror', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Horror / Horor
+                </button>
+                <button onclick="filterGenre('Comedy', this)" class="genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer">
+                    Comedy / Komedi
+                </button>
+            </div>
+        </section>
+
         <!-- KATALOG NOVEL -->
         <section id="katalog" class="space-y-6">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold font-cinzel text-slate-100">Katalog Novel Terbaru</h2>
-                <span class="text-xs text-slate-400">Menampilkan karya pilihan</span>
+                <h2 id="katalog-title" class="text-xl font-bold font-cinzel text-slate-100">Katalog Novel Terbaru</h2>
+                <span id="novel-count-badge" class="text-xs text-slate-400">Menampilkan karya pilihan</span>
             </div>
 
             <!-- Grid Daftar Novel Dinamis -->
@@ -88,42 +135,88 @@
         </div>
     </footer>
 
-   <!-- SCRIPT RENDER OTOMATIS -->
+    <!-- SCRIPT RENDER & FILTER OTOMATIS -->
     <script>
+        let allNovelsData = [];
+        let activeSelectedGenre = 'Semua';
+
         document.addEventListener("DOMContentLoaded", () => {
-            const container = document.getElementById("dynamic-novel-container");
             const novels = JSON.parse(localStorage.getItem("karantau_novels")) || [];
 
             // Jika LocalStorage kosong, masukkan data default awal
             if (novels.length === 0) {
-                const defaultNovels = [
+                allNovelsData = [
                     {
                         title: "Diantara Kampus dan Sepertiga Malam",
-                        genre: "Fantasi Epik",
+                        author: "Rangga Ash Raffy",
+                        genre: "Fantasy",
                         status: "Ongoing",
                         synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
                         cover: ""
                     }
                 ];
-                localStorage.setItem("karantau_novels", JSON.stringify(defaultNovels));
-                renderNovelCards(defaultNovels, container);
+                localStorage.setItem("karantau_novels", JSON.stringify(allNovelsData));
             } else {
-                renderNovelCards(novels, container);
+                allNovelsData = novels;
             }
+
+            renderNovelCards(allNovelsData);
         });
 
-        function renderNovelCards(novels, container) {
+        function filterGenre(genre, element) {
+            activeSelectedGenre = genre;
+
+            // Perbarui gaya aktif pada tombol-tombol genre
+            const buttons = document.querySelectorAll('.genre-btn');
+            buttons.forEach(btn => {
+                btn.className = "genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:border-amber-500 transition shrink-0 cursor-pointer";
+            });
+            element.className = "genre-btn px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 text-slate-950 transition shrink-0 cursor-pointer shadow-lg shadow-amber-500/10";
+
+            // Ubah judul katalog sesuai genre yang dipilih
+            const titleElem = document.getElementById('katalog-title');
+            if (genre === 'Semua') {
+                titleElem.innerText = "Katalog Novel Terbaru";
+                renderNovelCards(allNovelsData);
+            } else {
+                titleElem.innerText = `Katalog Genre: ${genre}`;
+                const filtered = allNovelsData.filter(novel => novel.genre === genre);
+                renderNovelCards(filtered);
+            }
+        }
+
+        function renderNovelCards(novelsToRender) {
+            const container = document.getElementById("dynamic-novel-container");
+            const badgeCount = document.getElementById("novel-count-badge");
             container.innerHTML = "";
-            novels.forEach((novel, index) => {
+
+            badgeCount.innerText = `Menampilkan ${novelsToRender.length} novel`;
+
+            if (novelsToRender.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-16 text-center space-y-3 bg-slate-900/20 border border-slate-800/80 rounded-3xl">
+                        <p class="text-sm text-slate-400">Belum ada novel dengan genre ini.</p>
+                        <button onclick="filterGenre('Semua', document.querySelector('.genre-btn'))" class="px-4 py-2 bg-amber-500/10 text-amber-400 rounded-xl text-xs font-semibold hover:bg-amber-500/20 transition cursor-pointer">
+                            Tampilkan Semua Novel
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            novelsToRender.forEach((novel) => {
+                // Cari index asli novel di dalam array utama (agar link detail.html tetap akurat)
+                const originalIndex = allNovelsData.findIndex(n => n.title === novel.title);
+
                 let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
                 if(novel.status === 'Completed') badgeClass = "bg-blue-500/10 text-blue-400 border-blue-500/30";
                 if(novel.status === 'Draft') badgeClass = "bg-slate-500/10 text-slate-400 border-slate-500/30";
 
                 const hasCover = novel.cover && novel.cover.trim() !== "";
+                const authorName = novel.author || 'Rangga';
                 
-                // Membuat card menjadi elemen <a> (Link) agar SELURUH CARD bisa diklik menuju halaman detail
                 const card = document.createElement('a');
-                card.href = `detail.html?id=${index}`;
+                card.href = `detail.html?id=${originalIndex}`;
                 card.className = "group bg-slate-900/40 border border-slate-800/80 rounded-3xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition duration-300 shadow-xl block cursor-pointer";
                 
                 card.innerHTML = `
@@ -139,7 +232,7 @@
                         </div>
                     </div>
                     <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                        <span class="text-slate-400">Oleh Rangga</span>
+                        <span class="text-slate-400">Oleh ${authorName}</span>
                         <span class="px-4 py-2 bg-amber-500/10 group-hover:bg-amber-500 text-amber-400 group-hover:text-slate-950 font-bold rounded-xl transition">Baca &rarr;</span>
                     </div>
                 `;
