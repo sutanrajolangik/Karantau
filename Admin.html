@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karantau — Creator Studio Pro</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        .font-sans-custom { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-serif-reading { font-family: 'Lora', serif; }
+        html { scroll-behavior: smooth; }
+        ::selection { background-color: #d97706; color: white; }
+    </style>
+</head>
+<body class="bg-[#07090e] text-slate-100 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+    <!-- NAVBAR ADMIN -->
+    <header class="sticky top-0 z-50 bg-[#07090e]/80 backdrop-blur-2xl border-b border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <h1 class="font-cinzel text-xl md:text-2xl font-bold tracking-[0.2em] bg-gradient-to-r from-amber-200 via-amber-400 to-indigo-300 bg-clip-text text-transparent">
+                KARANTAU <span class="text-xs uppercase tracking-widest text-amber-500 block font-sans">Creator Studio Pro</span>
+            </h1>
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-400 text-xs font-semibold text-slate-300 transition">
+                    &larr; Website Utama
+                </a>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-indigo-600 flex items-center justify-center font-bold text-slate-950 text-sm shadow-lg shadow-amber-500/20">
+                    RA
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="max-w-6xl mx-auto px-6 py-10 flex-grow w-full space-y-10">
+
+        <!-- Banner Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="md:col-span-2 bg-gradient-to-r from-slate-900 via-indigo-950 to-[#0b0e14] border border-amber-500/20 p-8 rounded-3xl shadow-2xl flex flex-col justify-between space-y-4">
+                <div class="space-y-2">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Studio Penulis Utama</span>
+                    <h2 class="text-2xl md:text-3xl font-bold font-cinzel text-amber-100">Pusat Kendali Karya Sastra</h2>
+                    <p class="text-xs text-slate-400">Kelola novel, hapus bab ganda, dan rilis naskah dengan sistem terpadu.</p>
+                </div>
+                <div>
+                    <button onclick="openNewNovelModal()" class="px-6 py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-2xl shadow-xl shadow-amber-500/10 transition cursor-pointer">
+                        + Buat Novel Baru
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/50 border border-slate-800/80 p-6 rounded-3xl flex flex-col justify-center space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Total Novel</span>
+                <h3 id="stat-total-novels" class="text-3xl font-bold font-cinzel text-amber-400">0 Novel</h3>
+                <p class="text-[10px] text-emerald-400 font-semibold">Aktif di LocalStorage</p>
+            </div>
+            <div class="bg-slate-900/50 border border-slate-800/80 p-6 rounded-3xl flex flex-col justify-center space-y-2">
+                <span class="text-xs text-slate-400 uppercase font-semibold">Total Seluruh Bab</span>
+                <h3 id="stat-total-chapters" class="text-3xl font-bold font-cinzel text-indigo-400">0 Bab</h3>
+                <p class="text-[10px] text-slate-500">Tersinkronisasi Otomatis</p>
+            </div>
+        </div>
+
+        <!-- Daftar Novel & Manajemen Bab -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-bold font-cinzel text-slate-200">Daftar Novel & Manajemen Bab</h3>
+            <div id="novel-list-container" class="space-y-6">
+                <!-- Render dinamis novel & daftar bab -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: BUAT NOVEL BARU -->
+    <div id="modal-new-novel" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0b0e14] border border-amber-500/20 rounded-3xl p-8 max-w-lg w-full space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <h3 class="font-cinzel font-bold text-xl text-amber-300">Buat Novel Baru</h3>
+                <button onclick="closeNewNovelModal()" class="text-slate-400 hover:text-white font-bold text-lg cursor-pointer">✕</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="space-y-3 p-4 rounded-2xl bg-slate-900/50 border border-slate-800">
+                    <label class="text-xs font-semibold text-amber-400 uppercase tracking-wider block">Cover Novel (Upload File atau Link URL)</label>
+                    <div class="flex items-center gap-4">
+                        <div id="modal-cover-preview" class="w-20 h-28 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] text-slate-400 overflow-hidden shrink-0 bg-cover bg-center">
+                            Preview
+                        </div>
+                        <div class="space-y-2 w-full">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block mb-1">Upload File Gambar:</span>
+                                <input type="file" id="cover-file-input" accept="image/*" onchange="previewCoverFile(event)" class="block w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-amber-500 file:text-slate-950 cursor-pointer">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400 block mb-1">Atau Tempel Link URL Gambar:</span>
+                                <input type="url" id="input-cover-url" placeholder="https://..." oninput="previewCoverUrl(this.value)" class="w-full bg-[#07090e] border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Judul Novel</label>
+                    <input type="text" id="input-novel-title" placeholder="Contoh: Legenda Pedang Cahaya" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3.5 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Genre Utama</label>
+                        <select id="input-novel-genre" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                            <option>Fantasi Epik</option>
+                            <option>Isekai / Reinkarnasi</option>
+                            <option>Sci-Fi / Cyberpunk</option>
+                            <option>Romance / Percintaan</option>
+                            <option>Action / Bela Diri</option>
+                            <option>Misteri / Thriller</option>
+                            <option>Slice of Life / Santai</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Status</label>
+                        <select id="input-novel-status" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                            <option value="Ongoing">Ongoing (Berjalan)</option>
+                            <option value="Completed">Completed (Tamat)</option>
+                            <option value="Draft">Draft (Simpan Saja)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sinopsis</label>
+                    <textarea id="input-novel-synopsis" rows="3" placeholder="Tulis sinopsis cerita..." class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3.5 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeNewNovelModal()" class="px-5 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer">Batal</button>
+                <button onclick="saveNewNovel()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition cursor-pointer">Simpan Novel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: UNGGAH / TAMBAH BAB -->
+    <div id="modal-new-chapter" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0b0e14] border border-amber-500/20 rounded-3xl p-8 max-w-3xl w-full space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                    <h3 class="font-cinzel font-bold text-xl text-amber-300">Tambah Bab Baru</h3>
+                    <p id="modal-target-novel-title" class="text-xs text-amber-400 mt-0.5">Novel: -</p>
+                </div>
+                <button onclick="closeNewChapterModal()" class="text-slate-400 hover:text-white font-bold text-lg cursor-pointer">✕</button>
+            </div>
+            
+            <div class="space-y-5">
+                <input type="hidden" id="active-novel-index">
+
+                <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-300">Upload file naskah (.txt):</span>
+                    <input type="file" id="file-uploader" accept=".txt" onchange="handleFileUpload(event)" class="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 cursor-pointer">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nomor Bab</label>
+                        <input type="text" id="chapter-number-input" value="Bab 1" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Judul Bab</label>
+                        <input type="text" id="chapter-title-input" placeholder="Contoh: Awal Mula Perjalanan" class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-3 text-sm text-slate-100 focus:outline-none focus:border-amber-500 transition">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Isi Naskah Bab</label>
+                        <span id="word-count-badge" class="text-[10px] text-slate-400">0 Kata</span>
+                    </div>
+                    <textarea id="chapter-content-box" rows="8" placeholder="Tulis atau paste seluruh teks naskah bab di sini..." class="w-full bg-[#07090e] border border-slate-800 rounded-2xl p-4 text-sm text-slate-100 font-serif-reading leading-relaxed focus:outline-none focus:border-amber-500 transition"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pratinjau Halaman (<span id="total-pages-preview">0</span> Halaman Terbagi)</label>
+                    <div id="pages-preview-container" class="grid grid-cols-2 md:grid-cols-5 gap-2 max-h-36 overflow-y-auto p-2 bg-slate-950 rounded-2xl border border-slate-800">
+                        <span class="text-xs text-slate-500 col-span-full text-center py-4">Teks otomatis dibagi per halaman saat diterbitkan.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2 border-t border-slate-800">
+                <button onclick="closeNewChapterModal()" class="px-5 py-2.5 bg-slate-900 border border-slate-800 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer">Batal</button>
+                <button onclick="publishChapterToNovel()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition cursor-pointer">Terbitkan Bab</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 py-8 text-center text-xs text-slate-500">
+        <p class="font-cinzel tracking-widest font-semibold text-amber-400/80">AETHELGARD CREATOR STUDIO PRO</p>
+        <p class="mt-1">&copy; 2026 Admin Management Portal.</p>
+    </footer>
+
+    <!-- JAVASCRIPT ADMIN TERPADU & MANAJEMEN HAPUS -->
+    <script>
+        const modalNewNovel = document.getElementById('modal-new-novel');
+        const modalNewChapter = document.getElementById('modal-new-chapter');
+
+        function openNewNovelModal() { modalNewNovel.classList.remove('hidden'); }
+        function closeNewNovelModal() { modalNewNovel.classList.add('hidden'); }
+
+        function openNewChapterModal(novelIndex) {
+            document.getElementById('active-novel-index').value = novelIndex;
+            let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+            if (novels[novelIndex]) {
+                document.getElementById('modal-target-novel-title').innerText = `Novel: ${novels[novelIndex].title}`;
+            }
+            modalNewChapter.classList.remove('hidden');
+        }
+        function closeNewChapterModal() { modalNewChapter.classList.add('hidden'); }
+
+        window.tempCoverUrl = '';
+
+        function previewCoverFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                const modalPreview = document.getElementById('modal-cover-preview');
+                modalPreview.style.backgroundImage = `url('${imageUrl}')`;
+                modalPreview.innerText = '';
+                document.getElementById('input-cover-url').value = '';
+                window.tempCoverUrl = imageUrl;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewCoverUrl(url) {
+            const trimmedUrl = url.trim();
+            const modalPreview = document.getElementById('modal-cover-preview');
+            if (trimmedUrl) {
+                modalPreview.style.backgroundImage = `url('${trimmedUrl}')`;
+                modalPreview.innerText = '';
+                document.getElementById('cover-file-input').value = '';
+                window.tempCoverUrl = trimmedUrl;
+            } else {
+                modalPreview.style.backgroundImage = '';
+                modalPreview.innerText = 'Preview';
+                window.tempCoverUrl = '';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderNovelsAdmin();
+        });
+
+        function renderNovelsAdmin() {
+            let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+            const container = document.getElementById('novel-list-container');
+            
+            if (novels.length === 0) {
+                novels = [
+                    {
+                        title: "Diantara Kampus dan Sepertiga Malam",
+                        genre: "Fantasi Epik",
+                        status: "Ongoing",
+                        synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
+                        cover: "",
+                        chapters: []
+                    }
+                ];
+                localStorage.setItem('karantau_novels', JSON.stringify(novels));
+            }
+
+            container.innerHTML = '';
+            let totalChaptersCount = 0;
+
+            novels.forEach((novel, index) => {
+                let badgeClass = "bg-amber-500/10 text-amber-400";
+                if(novel.status === 'Completed') badgeClass = "bg-blue-500/10 text-blue-400";
+                if(novel.status === 'Draft') badgeClass = "bg-slate-500/10 text-slate-400";
+
+                const hasCover = novel.cover && novel.cover.trim() !== "";
+                const chapters = novel.chapters || [];
+                totalChaptersCount += chapters.length;
+
+                // Render list bab untuk novel ini
+                let chaptersHtml = '';
+                if (chapters.length > 0) {
+                    chaptersHtml = `<div class="space-y-2 pt-4 border-t border-slate-800"><p class="text-xs font-bold text-amber-300 uppercase tracking-wider">Daftar Bab Terbit (${chapters.length}):</p><div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">`;
+                    chapters.forEach((chap, cIndex) => {
+                        chaptersHtml += `
+                            <div class="flex items-center justify-between bg-slate-950 border border-slate-800/80 px-3.5 py-2.5 rounded-xl text-xs">
+                                <span class="text-slate-200 font-medium truncate max-w-[160px]">${chap.number ? chap.number + ': ' : ''}${chap.title}</span>
+                                <button onclick="deleteChapter(${index}, ${cIndex})" class="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition cursor-pointer" title="Hapus Bab ini">🗑️ Hapus</button>
+                            </div>
+                        `;
+                    });
+                    chaptersHtml += `</div></div>`;
+                } else {
+                    chaptersHtml = `<p class="text-xs text-slate-500 pt-4 border-t border-slate-800">Belum ada bab yang diunggah untuk novel ini.</p>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 space-y-4 shadow-xl";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                        <div class="flex items-center gap-5 w-full md:w-auto">
+                            <div class="w-20 h-28 rounded-2xl bg-gradient-to-tr from-amber-950 via-indigo-950 to-slate-900 border border-amber-500/20 flex items-center justify-center font-cinzel font-bold text-xs text-amber-200 text-center overflow-hidden shrink-0 bg-cover bg-center" ${hasCover ? `style="background-image: url('${novel.cover}');"` : ''}>
+                                ${hasCover ? '' : 'Cover'}
+                            </div>
+                            <div class="space-y-2 flex-grow">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[10px] px-2.5 py-0.5 ${badgeClass} rounded-full font-semibold">${novel.genre}</span>
+                                    <span class="text-[10px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full font-semibold">${novel.status}</span>
+                                </div>
+                                <h3 class="text-xl font-bold font-cinzel text-slate-100">${novel.title}</h3>
+                                <p class="text-xs text-slate-400 line-clamp-1">Sinopsis: <span class="text-slate-300">${novel.synopsis}</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap shrink-0">
+                            <button onclick="openNewChapterModal(${index})" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/20 transition cursor-pointer">
+                                📂 + Tambah Bab
+                            </button>
+                            <button onclick="deleteNovel(${index})" class="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-xs font-semibold transition cursor-pointer" title="Hapus Novel Beserta Babnya">
+                                🗑️ Hapus Novel
+                            </button>
+                        </div>
+                    </div>
+                    ${chaptersHtml}
+                `;
+                container.appendChild(card);
+            });
+
+            // Update Statistik Dashboard
+            document.getElementById('stat-total-novels').innerText = novels.length + " Novel";
+            document.getElementById('stat-total-chapters').innerText = totalChaptersCount + " Bab";
+        }
+
+        function saveNewNovel() {
+            const titleInput = document.getElementById('input-novel-title');
+            const genreInput = document.getElementById('input-novel-genre');
+            const statusInput = document.getElementById('input-novel-status');
+            const synopsisInput = document.getElementById('input-novel-synopsis');
+
+            const title = titleInput.value.trim();
+            if (!title) {
+                alert("Judul novel wajib diisi!");
+                titleInput.focus();
+                return;
+            }
+
+            let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+            novels.unshift({
+                title: title,
+                genre: genreInput.value,
+                status: statusInput.value,
+                synopsis: synopsisInput.value.trim() || "Tidak ada sinopsis.",
+                cover: window.tempCoverUrl || "",
+                chapters: []
+            });
+
+            localStorage.setItem('karantau_novels', JSON.stringify(novels));
+            renderNovelsAdmin();
+            alert("Novel baru berhasil disimpan!");
+            closeNewNovelModal();
+
+            titleInput.value = '';
+            synopsisInput.value = '';
+            document.getElementById('input-cover-url').value = '';
+            document.getElementById('cover-file-input').value = '';
+            window.tempCoverUrl = '';
+            document.getElementById('modal-cover-preview').style.backgroundImage = '';
+            document.getElementById('modal-cover-preview').innerText = 'Preview';
+        }
+
+        function deleteNovel(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus novel ini beserta seluruh bab yang ada di dalamnya?")) {
+                let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+                novels.splice(index, 1);
+                localStorage.setItem('karantau_novels', JSON.stringify(novels));
+                renderNovelsAdmin();
+            }
+        }
+
+        function deleteChapter(novelIndex, chapterIndex) {
+            if (confirm("Apakah Anda yakin ingin menghapus bab ini?")) {
+                let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+                if (novels[novelIndex] && novels[novelIndex].chapters) {
+                    novels[novelIndex].chapters.splice(chapterIndex, 1);
+                    localStorage.setItem('karantau_novels', JSON.stringify(novels));
+                    renderNovelsAdmin();
+                }
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('chapter-content-box').value = e.target.result;
+                const text = e.target.result.trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                document.getElementById('word-count-badge').innerText = words + ' Kata';
+                alert(`File naskah "${file.name}" berhasil dimuat!`);
+            };
+            reader.readAsText(file);
+        }
+
+        document.getElementById('chapter-content-box').addEventListener('input', function() {
+            const text = this.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            document.getElementById('word-count-badge').innerText = words + ' Kata';
+        });
+
+        function publishChapterToNovel() {
+            const novelIndex = document.getElementById('active-novel-index').value;
+            const chapterNum = document.getElementById('chapter-number-input').value.trim();
+            const chapterTitle = document.getElementById('chapter-title-input').value.trim();
+            const content = document.getElementById('chapter-content-box').value.trim();
+
+            if (!chapterTitle) {
+                alert("Mohon isi judul bab terlebih dahulu.");
+                return;
+            }
+            if (!content) {
+                alert("Isi naskah bab tidak boleh kosong.");
+                return;
+            }
+
+            // Pecah teks panjang otomatis per paragraf
+            const paragraphs = content.split(/\n+/).filter(p => p.trim().length > 0);
+            let pagesData = [];
+            let paragraphsPerPage = 2; // 2 paragraf per halaman baca
+            
+            for (let i = 0; i < paragraphs.length; i += paragraphsPerPage) {
+                let chunk = paragraphs.slice(i, i + paragraphsPerPage);
+                let formattedChunk = chunk.map(p => `<p class="mb-4">${p}</p>`);
+                pagesData.push(formattedChunk);
+            }
+
+            const chapterData = {
+                number: chapterNum || "Bab",
+                title: chapterTitle,
+                pages: pagesData,
+                timestamp: new Date().toISOString()
+            };
+
+            let novels = JSON.parse(localStorage.getItem('karantau_novels')) || [];
+            if (novels[novelIndex]) {
+                if (!novels[novelIndex].chapters) {
+                    novels[novelIndex].chapters = [];
+                }
+                novels[novelIndex].chapters.push(chapterData);
+                localStorage.setItem('karantau_novels', JSON.stringify(novels));
+
+                renderNovelsAdmin();
+                alert(`Berhasil! Bab "${chapterTitle}" berhasil ditambahkan ke novel ini.`);
+                closeNewChapterModal();
+
+                // Reset form
+                document.getElementById('chapter-title-input').value = '';
+                document.getElementById('chapter-content-box').value = '';
+                document.getElementById('word-count-badge').innerText = '0 Kata';
+            }
+        }
+    </script>
+</body>
+</html>

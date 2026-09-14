@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Membaca — Karantau</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        .font-sans-custom { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-serif-reading { font-family: 'Lora', serif; }
+        html { scroll-behavior: smooth; }
+        ::selection { background-color: #d97706; color: white; }
+    </style>
+</head>
+<body class="bg-[#05070b] text-slate-200 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+    <!-- NAVBAR READER -->
+    <header class="sticky top-0 z-50 bg-[#05070b]/90 backdrop-blur-xl border-b border-amber-500/10">
+        <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a id="backButton" href="detail.html" class="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-amber-400 transition">
+                <span>&larr;</span> Kembali
+            </a>
+            <div class="text-center">
+                <p class="text-[10px] uppercase tracking-widest text-amber-400/80 font-bold font-cinzel">Bab &bull; Halaman <span id="navPageIndicator">1</span> dari <span id="totalPageIndicator">1</span></p>
+                <h1 id="headerChapterTitle" class="text-xs md:text-sm font-bold font-cinzel text-slate-200 truncate max-w-xs md:max-w-md">Memuat Bab...</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="adjustFontSize(1)" class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-xs font-bold text-slate-300 flex items-center justify-center transition" title="Perbesar Teks">A+</button>
+                <button onclick="adjustFontSize(-1)" class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-xs font-bold text-slate-300 flex items-center justify-center transition" title="Perkecil Teks">A-</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN BACAAN UTAMA -->
+    <main class="max-w-3xl mx-auto px-6 py-12 md:py-16 flex-grow w-full">
+        
+        <!-- Judul Bab di Halaman -->
+        <div class="text-center space-y-3 mb-12 border-b border-slate-900 pb-8">
+            <span class="text-xs uppercase tracking-[0.25em] text-amber-400 font-bold font-cinzel">Bab Dinamis &bull; Halaman <span id="titlePageIndicator">1</span></span>
+            <h2 id="pageTitle" class="text-2xl md:text-4xl font-extrabold font-cinzel text-amber-100 leading-snug">Memuat Judul...</h2>
+            <p id="novelMetaInfo" class="text-xs text-slate-500 pt-1">Karantau Novel Portal</p>
+        </div>
+
+        <!-- Wadah Konten Per Halaman -->
+        <article id="storyContent" class="font-serif-reading text-base md:text-lg text-slate-300 leading-[2.1] space-y-6 min-h-[300px]">
+            <!-- Konten bab akan dimuat otomatis dari Admin Panel -->
+        </article>
+
+        <!-- NAVIGASI HALAMAN (PAGINATION) -->
+        <div class="flex flex-col md:flex-row items-center justify-between border-t border-slate-900 mt-16 pt-8 gap-4">
+            <button onclick="changePage(-1)" id="prevBtn" class="px-5 py-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-400 hover:text-slate-200 transition disabled:opacity-30 disabled:cursor-not-allowed">
+                &larr; Halaman Sebelumnya
+            </button>
+
+            <!-- Indikator Angka Halaman -->
+            <div id="pageNumbers" class="flex items-center gap-1.5 flex-wrap justify-center">
+                <!-- Dibuat otomatis via JS -->
+            </div>
+
+            <button onclick="changePage(1)" id="nextBtn" class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/10 transition disabled:opacity-30 disabled:cursor-not-allowed">
+                Halaman Berikutnya &rarr;
+            </button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 py-8 text-center text-xs text-slate-500">
+        <p class="font-cinzel tracking-widest font-semibold text-amber-400/80">AETHELGARD NOVEL PORTAL</p>
+        <p class="mt-1">&copy; 2026 Seluruh Hak Cipta Dilindungi.</p>
+    </footer>
+
+    <!-- SCRIPT OTOMATIS & TOLERAN BERBAGAI FORMAT ADMIN PANEL -->
+    <script>
+        let chapterPages = [];
+        let currentPage = 0;
+        let currentFontSize = 18;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const novelId = parseInt(urlParams.get('id')) || parseInt(urlParams.get('novelId')) || 0;
+            const chapterId = parseInt(urlParams.get('chapter')) || parseInt(urlParams.get('chapterId')) || 0;
+
+            document.getElementById('backButton').href = `detail.html?id=${novelId}`;
+
+            const novels = JSON.parse(localStorage.getItem("karantau_novels")) || [];
+            const currentNovel = novels[novelId];
+
+            if (currentNovel) {
+                document.getElementById('novelMetaInfo').innerText = `${currentNovel.title} &bull; Karantau Portal`;
+
+                if (currentNovel.chapters && currentNovel.chapters[chapterId]) {
+                    const currentChapter = currentNovel.chapters[chapterId];
+                    
+                    const chapterTitle = currentChapter.title || currentChapter.chapterTitle || `Bab ${chapterId + 1}`;
+                    document.title = `${chapterTitle} — ${currentNovel.title} — Karantau`;
+                    document.getElementById('headerChapterTitle').innerText = chapterTitle;
+                    document.getElementById('pageTitle').innerText = chapterTitle;
+                    
+                    // CEK BERBAGAI KEMUNGKINAN FORMAT PENYIMPANAN DARI ADMIN PANEL:
+                    let rawContent = currentChapter.pages || currentChapter.content || currentChapter.text || currentChapter.body;
+
+                    if (Array.isArray(rawContent) && rawContent.length > 0) {
+                        // Jika disimpan sebagai Array
+                        chapterPages = rawContent.map(p => [typeof p === 'string' ? `<p>${p}</p>` : p]);
+                    } else if (typeof rawContent === 'string' && rawContent.trim() !== '') {
+                        // Jika disimpan sebagai String teks biasa / paragraf panjang
+                        // Otomatis ubah baris baru (\n) atau teks panjang menjadi elemen paragraf HTML
+                        const paragraphs = rawContent.split(/\r?\n/).filter(p => p.trim() !== '');
+                        if (paragraphs.length > 0) {
+                            chapterPages = paragraphs.map(p => [`<p class="mb-4">${p}</p>`]);
+                        } else {
+                            chapterPages = [[`<p>${rawContent}</p>`]];
+                        }
+                    }
+                }
+            }
+
+            // Jika data masih kosong atau belum diisi di Admin Panel
+            if (chapterPages.length === 0) {
+                document.getElementById('headerChapterTitle').innerText = "Bab Belum Tersedia";
+                document.getElementById('pageTitle').innerText = "Konten Belum Diunggah";
+                chapterPages = [
+                    [`<p class="first-letter:text-5xl first-letter:font-cinzel first-letter:font-bold first-letter:float-left first-letter:mr-3 first-letter:text-amber-400">Belum ada isi bab yang tersimpan untuk bab ini. Silakan tambahkan atau simpan ulang teks bab melalui Admin Panel Anda.</p>`]
+                ];
+            }
+
+            document.getElementById('totalPageIndicator').innerText = chapterPages.length;
+            renderPage();
+        });
+
+        function renderPage() {
+            const contentContainer = document.getElementById('storyContent');
+            if (chapterPages.length > 0 && chapterPages[currentPage]) {
+                contentContainer.innerHTML = chapterPages[currentPage].join('');
+            }
+
+            document.getElementById('navPageIndicator').innerText = currentPage + 1;
+            document.getElementById('titlePageIndicator').innerText = currentPage + 1;
+
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage === chapterPages.length - 1;
+
+            renderPageNumbers();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPageNumbers() {
+            const container = document.getElementById('pageNumbers');
+            container.innerHTML = '';
+
+            for (let i = 0; i < chapterPages.length; i++) {
+                const btn = document.createElement('button');
+                btn.innerText = i + 1;
+                btn.className = `w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center ${
+                    i === currentPage 
+                    ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20' 
+                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                }`;
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderPage();
+                };
+                container.appendChild(btn);
+            }
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 0 && newPage < chapterPages.length) {
+                currentPage = newPage;
+                renderPage();
+            }
+        }
+
+        function adjustFontSize(amount) {
+            currentFontSize += amount * 2;
+            if (currentFontSize < 14) currentFontSize = 14;
+            if (currentFontSize > 26) currentFontSize = 26;
+            document.getElementById('storyContent').style.fontSize = currentFontSize + 'px';
+        }
+    </script>
+
+</body>
+</html>

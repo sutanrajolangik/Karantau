@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Novel — Aethelgard</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .font-sans-custom { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        html { scroll-behavior: smooth; }
+        ::selection { background-color: #d97706; color: white; }
+    </style>
+</head>
+<body class="bg-[#07090e] text-slate-100 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-50 bg-[#07090e]/85 backdrop-blur-2xl border-b border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="font-cinzel text-xl md:text-2xl font-bold tracking-[0.2em] bg-gradient-to-r from-amber-200 via-amber-400 to-indigo-300 bg-clip-text text-transparent">
+                KARANTAU
+            </a>
+            <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-400 text-xs font-semibold text-slate-300 transition">
+                &larr; Kembali ke Beranda
+            </a>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA DETAIL NOVEL -->
+    <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full space-y-12">
+
+        <!-- HEADER INFORMASI NOVEL -->
+        <section class="flex flex-col md:flex-row items-start gap-8 bg-gradient-to-r from-slate-900 via-indigo-950 to-[#0b0e14] border border-amber-500/20 p-8 md:p-10 rounded-3xl shadow-2xl">
+            <!-- Cover Novel -->
+            <div id="detail-cover" class="w-48 h-64 md:w-56 md:h-80 rounded-2xl bg-gradient-to-tr from-amber-950 via-indigo-950 to-slate-900 border border-amber-500/30 flex items-center justify-center font-cinzel font-bold text-amber-200 text-center p-4 shadow-xl shrink-0 mx-auto md:mx-0 bg-cover bg-center">
+                Cover Novel
+            </div>
+
+            <!-- Detail Teks -->
+            <div class="space-y-4 flex-grow">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span id="detail-genre" class="text-[10px] px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full font-semibold border border-amber-500/30">Fantasi Epik</span>
+                    <span id="detail-status" class="text-[10px] px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full font-semibold border border-emerald-500/30">Ongoing</span>
+                    <span class="text-xs text-slate-400">Dilihat: 12.4K</span>
+                </div>
+
+                <h1 id="detail-title" class="text-2xl md:text-4xl font-extrabold font-cinzel text-amber-100">Memuat Judul...</h1>
+                <p id="detail-author" class="text-xs text-amber-400 font-semibold">Penulis: Rangga Ash Raffy</p>
+
+                <p id="detail-synopsis" class="text-xs md:text-sm text-slate-300 leading-relaxed pt-2">
+                    Memuat sinopsis cerita...
+                </p>
+
+                <div class="flex items-center gap-4 pt-4">
+                    <a id="btn-read-first" href="#" class="px-6 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-amber-500/10 transition">
+                        📖 Mulai Baca (Bab 1)
+                    </a>
+                    <button onclick="alert('Novel dimasukkan ke Daftar Bacaan / Bookmark!')" class="px-6 py-3.5 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-semibold text-xs uppercase tracking-wider rounded-2xl transition">
+                        ⭐ Bookmark
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DAFTAR BAB (CHAPTER LIST) -->
+        <section class="space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-900 pb-4">
+                <h2 class="text-xl font-bold font-cinzel text-slate-100">Daftar Bab (<span id="chapter-count-badge" class="text-amber-400">0 Bab</span>)</h2>
+                <span class="text-xs text-slate-400">Sinkronisasi Otomatis</span>
+            </div>
+
+            <!-- List Bab Dinamis -->
+            <div id="chapter-list-container" class="grid grid-cols-1 gap-3">
+                <p class="text-xs text-slate-500 text-center py-6">Belum ada bab yang diterbitkan untuk novel ini.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 mt-20 py-8 text-center text-xs text-slate-500">
+        <p class="font-cinzel tracking-widest font-semibold text-amber-400/80">AETHELGARD NOVEL PORTAL</p>
+        <p class="mt-1">&copy; 2026 Seluruh Hak Cipta Dilindungi.</p>
+    </footer>
+
+    <!-- SCRIPT RENDER DETAIL & CHAPTER BERDASARKAN NOVEL ID -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const novelIndex = urlParams.get('id');
+
+            const novels = JSON.parse(localStorage.getItem("karantau_novels")) || [];
+
+            if (novelIndex !== null && novels[novelIndex]) {
+                const novel = novels[novelIndex];
+
+                // Set Informasi Utama Novel
+                document.getElementById('detail-title').innerText = novel.title;
+                document.getElementById('detail-genre').innerText = novel.genre || 'Fantasi';
+                document.getElementById('detail-status').innerText = novel.status || 'Ongoing';
+                document.getElementById('detail-synopsis').innerText = novel.synopsis || 'Tidak ada sinopsis.';
+
+                // Warna badge status
+                const statusBadge = document.getElementById('detail-status');
+                if (novel.status === 'Completed') {
+                    statusBadge.className = "text-[10px] px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full font-semibold border border-blue-500/30";
+                } else if (novel.status === 'Draft') {
+                    statusBadge.className = "text-[10px] px-3 py-1 bg-slate-500/10 text-slate-400 rounded-full font-semibold border border-slate-500/30";
+                }
+
+                // Set Cover
+                const coverDiv = document.getElementById('detail-cover');
+                if (novel.cover && novel.cover.trim() !== "") {
+                    coverDiv.style.backgroundImage = `url('${novel.cover}')`;
+                    coverDiv.innerText = '';
+                } else {
+                    coverDiv.innerText = novel.title;
+                }
+
+                // Render Daftar Bab Milik Novel Ini Saja
+                const chapters = novel.chapters || [];
+                const chapterContainer = document.getElementById('chapter-list-container');
+                document.getElementById('chapter-count-badge').innerText = chapters.length + " Bab";
+
+                if (chapters.length > 0) {
+                    chapterContainer.innerHTML = "";
+                    chapters.forEach((chap, cIdx) => {
+                        const chapterItem = document.createElement('a');
+                        // Tautan mengarah ke reader dengan membawa ID novel dan index bab yang spesifik
+                        chapterItem.href = `reader.html?id=${novelIndex}&chapter=${cIdx}`;
+                        chapterItem.className = "group bg-slate-900/40 border border-slate-800/80 hover:border-amber-500/40 p-5 rounded-2xl flex items-center justify-between transition";
+                        chapterItem.innerHTML = `
+                            <div class="space-y-1">
+                                <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${chap.number || 'Bab ' + (cIdx + 1)}</span>
+                                <h3 class="text-sm md:text-base font-bold font-cinzel text-slate-200 group-hover:text-amber-300 transition">${chap.title}</h3>
+                            </div>
+                            <div class="text-xs text-slate-500 group-hover:text-amber-400 transition flex items-center gap-2">
+                                <span>Baca &rarr;</span>
+                            </div>
+                        `;
+                        chapterContainer.appendChild(chapterItem);
+                    });
+
+                    // Tombol Mulai Baca langsung ke bab pertama novel ini
+                    document.getElementById('btn-read-first').href = `reader.html?id=${novelIndex}&chapter=0`;
+                } else {
+                    chapterContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Belum ada bab yang diterbitkan untuk novel ini.</p>`;
+                    document.getElementById('btn-read-first').href = "#";
+                    document.getElementById('btn-read-first').onclick = () => alert("Belum ada bab yang tersedia untuk dibaca.");
+                }
+            } else {
+                document.getElementById('detail-title').innerText = "Novel Tidak Ditemukan";
+                document.getElementById('detail-synopsis').innerText = "Maaf, data novel yang Anda cari tidak tersedia di penyimpanan lokal.";
+            }
+        });
+    </script>
+</body>
+</html>

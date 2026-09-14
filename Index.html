@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aethelgard — Platform Sastra & Web Novel Eksklusif</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .font-sans-custom { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        html { scroll-behavior: smooth; }
+        ::selection { background-color: #d97706; color: white; }
+    </style>
+</head>
+<body class="bg-[#07090e] text-slate-100 font-sans-custom antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+    <!-- NAVBAR UTAMA -->
+    <header class="sticky top-0 z-50 bg-[#07090e]/80 backdrop-blur-2xl border-b border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="index.html" class="font-cinzel text-xl md:text-2xl font-bold tracking-[0.2em] bg-gradient-to-r from-amber-200 via-amber-400 to-indigo-300 bg-clip-text text-transparent">
+                    KARANTAU
+                </a>
+                <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+                    <a href="#katalog" class="hover:text-amber-400 transition">Jelajah Novel</a>
+                    <a href="#genre" class="hover:text-amber-400 transition">Genre</a>
+                </nav>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="login.html" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/10 transition">
+                    Creator Studio ✍️
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="max-w-7xl mx-auto px-6 py-10 flex-grow w-full space-y-16">
+
+        <!-- HERO BANNER -->
+        <section class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-[#07090e] border border-amber-500/20 p-8 md:p-14 shadow-2xl">
+            <div class="absolute -right-20 -top-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="max-w-2xl space-y-6 relative z-10">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-[0.3em]">Penerbitan Mandiri Tanpa Batas</span>
+                <h1 class="text-3xl md:text-5xl font-extrabold font-cinzel text-amber-100 leading-tight">
+                    Jelajahi Dunia Imajinasi Tanpa Sensor & Batasan Kuantota.
+                </h1>
+                <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                    Baca ribuan bab novel fantasi, sci-fi, isekai, hingga romansa terbaik langsung dari para penulis aslinya. Nikmati pengalaman membaca eksklusif dengan tata letak mewah.
+                </p>
+                <div class="flex items-center gap-4 pt-2">
+                    <a href="#katalog" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-2xl shadow-xl shadow-amber-500/10 transition">
+                        Mulai Membaca
+                    </a>
+                    <a href="login.html" class="px-6 py-3.5 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-semibold text-xs uppercase tracking-wider rounded-2xl transition">
+                        Gabung Jadi Penulis
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- KATALOG NOVEL -->
+        <section id="katalog" class="space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold font-cinzel text-slate-100">Katalog Novel Terbaru</h2>
+                <span class="text-xs text-slate-400">Menampilkan karya pilihan</span>
+            </div>
+
+            <!-- Grid Daftar Novel Dinamis -->
+            <div id="dynamic-novel-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Data akan dimuat otomatis dari localStorage -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 mt-20 py-10 bg-[#05070b]">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
+            <div>
+                <p class="font-cinzel tracking-widest font-bold text-amber-400">AETHELGARD PUBLISHING</p>
+                <p class="mt-1">Platform baca dan tulis web novel tanpa batasan.</p>
+            </div>
+            <p>&copy; 2026 Aethelgard. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+   <!-- SCRIPT RENDER OTOMATIS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById("dynamic-novel-container");
+            const novels = JSON.parse(localStorage.getItem("karantau_novels")) || [];
+
+            // Jika LocalStorage kosong, masukkan data default awal
+            if (novels.length === 0) {
+                const defaultNovels = [
+                    {
+                        title: "Diantara Kampus dan Sepertiga Malam",
+                        genre: "Fantasi Epik",
+                        status: "Ongoing",
+                        synopsis: "Kisah perjalanan menembus batas logika kampus menuju dimensi mistis Aethelgard...",
+                        cover: ""
+                    }
+                ];
+                localStorage.setItem("karantau_novels", JSON.stringify(defaultNovels));
+                renderNovelCards(defaultNovels, container);
+            } else {
+                renderNovelCards(novels, container);
+            }
+        });
+
+        function renderNovelCards(novels, container) {
+            container.innerHTML = "";
+            novels.forEach((novel, index) => {
+                let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                if(novel.status === 'Completed') badgeClass = "bg-blue-500/10 text-blue-400 border-blue-500/30";
+                if(novel.status === 'Draft') badgeClass = "bg-slate-500/10 text-slate-400 border-slate-500/30";
+
+                const hasCover = novel.cover && novel.cover.trim() !== "";
+                
+                // Membuat card menjadi elemen <a> (Link) agar SELURUH CARD bisa diklik menuju halaman detail
+                const card = document.createElement('a');
+                card.href = `detail.html?id=${index}`;
+                card.className = "group bg-slate-900/40 border border-slate-800/80 rounded-3xl p-4 flex flex-col justify-between hover:border-amber-500/40 transition duration-300 shadow-xl block cursor-pointer";
+                
+                card.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="w-full h-64 rounded-2xl bg-gradient-to-tr from-amber-950 via-indigo-950 to-slate-900 border border-amber-500/20 flex items-center justify-center font-cinzel font-bold text-amber-200 text-center p-4 relative overflow-hidden shadow-inner group-hover:scale-[1.02] transition duration-300 bg-cover bg-center" ${hasCover ? `style="background-image: url('${novel.cover}');"` : ''}>
+                            ${hasCover ? '' : novel.title}
+                            <span class="absolute top-3 right-3 text-[10px] px-2.5 py-1 bg-slate-950/80 backdrop-blur-md ${badgeClass} rounded-full font-semibold border">${novel.status}</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">${novel.genre || 'Fantasi'}</span>
+                            <h3 class="text-base font-bold font-cinzel text-slate-100 group-hover:text-amber-300 transition">${novel.title}</h3>
+                            <p class="text-xs text-slate-400 line-clamp-2">${novel.synopsis || 'Tidak ada sinopsis.'}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Oleh Rangga</span>
+                        <span class="px-4 py-2 bg-amber-500/10 group-hover:bg-amber-500 text-amber-400 group-hover:text-slate-950 font-bold rounded-xl transition">Baca &rarr;</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
